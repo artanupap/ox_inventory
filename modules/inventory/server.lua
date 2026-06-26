@@ -1772,6 +1772,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
 		if fromData then
+			print(('[ox_inventory] DEBUG: item=%s sameInv=%s fromType=%s toType=%s'):format(
+				tostring(fromData.name), tostring(sameInventory), tostring(fromInventory.type), tostring(toInventory.type)
+			))
 			if not sameInventory and fromInventory.type == 'player' and toInventory.type ~= 'player' then
 				local itemDef = Items(fromData.name)
 				print(('[ox_inventory] noGive check: item=%s fromType=%s toType=%s itemDef=%s noGive=%s'):format(
