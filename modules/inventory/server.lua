@@ -1773,7 +1773,10 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 		if fromData then
 			if not sameInventory and fromInventory.type == 'player' and toInventory.type ~= 'player' then
 				local itemDef = Items(fromData.name)
-				if itemDef and itemDef.noGive then return false end
+				if itemDef and itemDef.noGive then
+					print(('[ox_inventory] BLOCKED noGive item: %s -> %s (type: %s)'):format(fromData.name, toInventory.id, toInventory.type))
+					return false
+				end
 			end
 
             if fromData.metadata.container and toInventory.type == 'container' then return false end
