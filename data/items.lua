@@ -1777,6 +1777,7 @@ return {
 		weight = 100,
 		stack = false,
 		close = true,
+		noGive = true,
 	},
 
 	['phra_genuine'] = {
@@ -1784,6 +1785,7 @@ return {
 		weight = 100,
 		stack = false,
 		close = false,
+		noGive = true,
 	},
 
 	['phra_fake'] = {
@@ -1791,6 +1793,7 @@ return {
 		weight = 100,
 		stack = false,
 		close = false,
+		noGive = true,
 	},
 
 	['phra_certificate'] = {
@@ -1798,6 +1801,7 @@ return {
 		weight = 50,
 		stack = false,
 		close = true,
+		noGive = true,
 	},
 
 	['magnify_lv1'] = {
