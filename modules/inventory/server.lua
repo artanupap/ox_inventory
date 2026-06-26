@@ -1687,7 +1687,7 @@ local GetLocks = require 'modules.locks'
 ---@param source number
 ---@param data SwapSlotData
 lib.callback.register('ox_inventory:swapItems', function(source, data)
-	print(('[ox_inventory] swapItems called: fromType=%s toType=%s'):format(tostring(data.fromType), tostring(data.toType)))
+	print(('[ox_inventory] swapItems v7 called: fromType=%s toType=%s count=%s'):format(tostring(data.fromType), tostring(data.toType), tostring(data.count)))
 	if data.fromType ~= data.toType and data.toType ~= 'player' and data.fromType ~= 'player' then
         Utils.LogExploit(source, 'swapItems', 'Triggered event with invalid data', true)
         return
