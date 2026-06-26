@@ -16,7 +16,10 @@ local noGiveItems = {
 }
 
 exports.ox_inventory:registerHook('swapItems', function(payload)
-    if payload.fromType == 'player' and payload.toType ~= 'player' then
+    local block = (payload.fromType == 'player' and payload.toType ~= 'player')
+               or (payload.action == 'give')
+
+    if block then
         local itemName = payload.fromSlot and payload.fromSlot.name
         if itemName and noGiveItems[itemName] then
             return false
