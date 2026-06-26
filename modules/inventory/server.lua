@@ -1771,7 +1771,7 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
 		if fromData then
-			if not sameInventory and toInventory.type == 'trunk' and fromInventory.type == 'player' then
+			if not sameInventory and fromInventory.type == 'player' and toInventory.type ~= 'player' then
 				local itemDef = Items(fromData.name)
 				if itemDef and itemDef.noGive then return false end
 			end
