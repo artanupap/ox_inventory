@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#c8a820"/>
+      <stop offset="100%" stop-color="#6a5008"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="12" fill="url(#bg)"/>
+  <rect width="128" height="128" rx="12" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <!-- กระสอบข้าว -->
+  <path d="M22 58 Q22 44 36 42 L92 42 Q106 44 106 58 L106 96 Q106 108 92 108 L36 108 Q22 108 22 96 Z" fill="#e8d090"/>
+  <path d="M22 58 Q22 44 36 42 L92 42 Q106 44 106 58 L106 96 Q106 108 92 108 L36 108 Q22 108 22 96 Z" fill="none" stroke="#b89830" stroke-width="2.5"/>
+  <!-- ปากกระสอบ -->
+  <path d="M40 42 Q64 34 88 42" stroke="#b89830" stroke-width="2" fill="none"/>
+  <rect x="46" y="32" width="36" height="12" rx="6" fill="#c8a828"/>
+  <!-- รูปรวงข้าวบนกระสอบ -->
+  <line x1="64" y1="52" x2="64" y2="74" stroke="#a08020" stroke-width="2"/>
+  <ellipse cx="58" cy="54" rx="4" ry="8" fill="#f0d840" transform="rotate(-15 58 54)" opacity="0.9"/>
+  <ellipse cx="62" cy="50" rx="4" ry="7" fill="#e8cc30" transform="rotate(-5 62 50)" opacity="0.9"/>
+  <ellipse cx="66" cy="50" rx="4" ry="7" fill="#f0d840" transform="rotate(5 66 50)" opacity="0.9"/>
+  <ellipse cx="70" cy="54" rx="4" ry="8" fill="#e8cc30" transform="rotate(15 70 54)" opacity="0.9"/>
+  <!-- เมล็ดข้าวกระจาย -->
+  <ellipse cx="36" cy="82" rx="5" ry="9" fill="#f5e868" transform="rotate(-20 36 82)" opacity="0.8"/>
+  <ellipse cx="50" cy="90" rx="5" ry="9" fill="#edd840" transform="rotate(5 50 90)" opacity="0.8"/>
+  <ellipse cx="66" cy="86" rx="5" ry="9" fill="#f5e868" transform="rotate(-10 66 86)" opacity="0.8"/>
+  <ellipse cx="82" cy="90" rx="5" ry="9" fill="#edd840" transform="rotate(15 82 90)" opacity="0.8"/>
+  <ellipse cx="96" cy="82" rx="5" ry="9" fill="#f5e868" transform="rotate(25 96 82)" opacity="0.8"/>
+  <!-- ข้อความ -->
+  <text x="64" y="110" text-anchor="middle" font-size="0" fill="transparent">rice</text>
+</svg>

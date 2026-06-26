@@ -62,29 +62,8 @@ return {
 		}
 	},
 
+	-- trunk disabled: handled by custom_trunk resource
 	trunk = {
-		[0] = {21, 168000},		-- Compact
-		[1] = {41, 328000},		-- Sedan
-		[2] = {51, 408000},		-- SUV
-		[3] = {31, 248000},		-- Coupe
-		[4] = {41, 328000},		-- Muscle
-		[5] = {31, 248000},		-- Sports Classic
-		[6] = {31, 248000},		-- Sports
-		[7] = {21, 168000},		-- Super
-		[8] = {5, 40000},		-- Motorcycle
-		[9] = {51, 408000},		-- Offroad
-		[10] = {51, 408000},	-- Industrial
-		[11] = {41, 328000},	-- Utility
-		[12] = {61, 488000},	-- Van
-		-- [14] -- Boat
-		-- [15] -- Helicopter
-		-- [16] -- Plane
-		[17] = {41, 328000},	-- Service
-		[18] = {41, 328000},	-- Emergency
-		[19] = {41, 328000},	-- Military
-		[20] = {61, 488000},	-- Commercial
-		models = {
-			[`xa21`] = {11, 10000}
-		},
+		models = {},
 	}
 }

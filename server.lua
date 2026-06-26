@@ -3,6 +3,7 @@ if not lib then return end
 require 'modules.bridge.server'
 require 'modules.crafting.server'
 require 'modules.shops.server'
+require 'modules.trash.server'
 require 'modules.pefcl.server'
 
 if GetConvar('inventory:versioncheck', 'true') == 'true' then

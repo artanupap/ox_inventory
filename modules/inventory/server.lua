@@ -1771,6 +1771,11 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
 		if fromData then
+			if not sameInventory and toInventory.type == 'trunk' and fromInventory.type == 'player' then
+				local itemDef = Items(fromData.name)
+				if itemDef and itemDef.noGive then return false end
+			end
+
             if fromData.metadata.container and toInventory.type == 'container' then return false end
             if toData and toData.metadata.container and fromInventory.type == 'container' then return false end
 
@@ -2507,7 +2512,7 @@ local function giveItem(playerId, slot, target, count)
 
 		local item = Items(data.name)
 
-		if not item or data.count < count or not Inventory.CanCarryItem(toInventory, item, count, data.metadata) or #(GetEntityCoords(fromInventory.player.ped) - GetEntityCoords(toInventory.player.ped)) > 15 then
+		if not item or item.noGive or data.count < count or not Inventory.CanCarryItem(toInventory, item, count, data.metadata) or #(GetEntityCoords(fromInventory.player.ped) - GetEntityCoords(toInventory.player.ped)) > 15 then
 			return { 'cannot_give', count, data.label }
 		end
 

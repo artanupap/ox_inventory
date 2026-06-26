@@ -1,23 +1,32 @@
-$mainColor: #22232c;
-$textColor: #c1c2c5;
-$mainFont: Roboto;
+﻿$mainColor: rgba(6, 12, 40, 0.92);
+$textColor: #e2e8f0;
+$mainFont: 'Inter', 'Segoe UI', sans-serif;
 
-$secondaryColor: rgba(12, 12, 12, 0.4);
-$secondaryColorHighlight: #33343f;
-$secondaryColorLight: rgba(0, 0, 0, 0.5);
-$secondaryColorDark: rgba(12, 12, 12, 0.8);
+$secondaryColor: rgba(15, 25, 70, 0.55);
+$secondaryColorHighlight: rgba(30, 50, 130, 0.65);
+$secondaryColorLight: rgba(20, 35, 90, 0.4);
+$secondaryColorDark: rgba(8, 15, 50, 0.85);
+
+$accentBlue: #3b82f6;
+$accentBlueDim: rgba(59, 130, 246, 0.25);
+$accentBlueBorder: rgba(59, 130, 246, 0.35);
+$glowBlue: 0 0 12px rgba(59, 130, 246, 0.15);
 
 $gridCols: 5;
 $gridRows: 5;
 $gridSize: 10.2vh;
-$gridGap: 2px;
+$gridGap: 3px;
 $containerSize: calc(#{$gridRows} * #{$gridSize + 0.22vh} + #{$gridRows} * #{$gridGap});
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
+  font-family: $mainFont;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
@@ -28,10 +37,6 @@ body {
 
 #root {
   height: 100%;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 ::-webkit-scrollbar {
@@ -47,132 +52,164 @@ p {
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
 }
 
 .app-wrapper {
   height: 100%;
   width: 100%;
-  color: white;
+  color: $textColor;
 }
 
+// â”€â”€ Context menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .context-menu-list {
   min-width: 200px;
-  background-color: $mainColor;
+  background: $mainColor;
   color: $textColor;
-  padding: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
-  border-radius: 4px;
+  padding: 6px;
+  border: 1px solid $accentBlueBorder;
+  border-radius: 10px;
   outline: none;
   display: flex;
   flex-direction: column;
+  box-shadow: $glowBlue, 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .context-menu-item {
-  padding: 8px;
-  border-radius: 4px;
-  background-color: transparent;
+  padding: 9px 12px;
+  border-radius: 7px;
+  background: transparent;
   outline: none;
   border: none;
   color: $textColor;
+  font-family: $mainFont;
+  font-size: 13px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  &:active {
-    transform: none;
-  }
+  transition: background 0.12s;
+  &:active { transform: none; }
   &:hover {
-    background-color: $secondaryColorHighlight;
+    background: $secondaryColorHighlight;
     cursor: pointer;
   }
 }
 
-.tooltip-description {
-  padding-top: 5px;
-}
+// â”€â”€ Tooltip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.tooltip-description { padding-top: 5px; }
+.tooltip-markdown > p { margin: 0; }
 
-.tooltip-markdown > p {
-  margin: 0;
-}
-
-button:active {
-  transform: translateY(3px);
-}
-
-.item-drag-preview {
-  width: 7.7vh;
-  height: 7.7vh;
-  z-index: 1;
-  position: fixed;
+.tooltip-wrapper {
   pointer-events: none;
-  top: 0;
-  left: 0;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 7vh;
-  image-rendering: -webkit-optimize-contrast;
+  display: flex;
+  background: $mainColor;
+  width: 210px;
+  padding: 10px 12px;
+  flex-direction: column;
+  min-width: 210px;
+  color: $textColor;
+  font-family: $mainFont;
+  border-radius: 10px;
+  border: 1px solid $accentBlueBorder;
+  box-shadow: $glowBlue, 0 8px 32px rgba(0, 0, 0, 0.6);
+  gap: 4px;
+  p { font-size: 12px; font-weight: 400; }
 }
 
+.tooltip-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  p { font-size: 14px; font-weight: 600; color: #fff; }
+}
+
+.tooltip-crafting-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  svg { padding-right: 3px; }
+  p { font-size: 13px; }
+}
+
+.tooltip-ingredients { padding-top: 5px; }
+
+.tooltip-ingredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img { width: 28px; height: 28px; padding-right: 5px; }
+}
+
+// â”€â”€ Inventory wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .inventory-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   height: 100%;
-
-  gap: 20px;
+  gap: 16px;
 }
 
+// â”€â”€ Inventory control (middle column) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .inventory-control {
   display: flex;
 
   .inventory-control-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     justify-content: center;
     align-items: center;
   }
 
   .inventory-control-input {
-    transition: 200ms;
-    padding: 16px 8px;
-    border-radius: 2.5%;
+    transition: 150ms;
+    padding: 14px 10px;
+    border-radius: 8px;
     font-family: $mainFont;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 500;
     text-align: center;
     outline: none;
-    border: none;
+    border: 1px solid $accentBlueBorder;
     color: #fff;
-    background-color: $secondaryColor;
+    background: $secondaryColor;
     &:focus-within {
-      background-color: $secondaryColorDark;
+      background: $secondaryColorDark;
+      border-color: $accentBlue;
+      box-shadow: 0 0 0 2px $accentBlueDim;
     }
   }
 
   .inventory-control-button {
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
     color: #fff;
-    background-color: $secondaryColor;
-    transition: 200ms;
-    padding: 12px 8px;
-    border-radius: 2.5%;
-    border: none;
+    background: $secondaryColor;
+    transition: 150ms;
+    padding: 11px 10px;
+    border-radius: 8px;
+    border: 1px solid $accentBlueBorder;
     text-transform: uppercase;
     font-family: $mainFont;
     width: 100%;
-    font-weight: 500;
+    letter-spacing: 0.5px;
     &:hover {
-      background-color: $secondaryColorDark;
+      background: $secondaryColorHighlight;
+      border-color: $accentBlue;
+      cursor: pointer;
     }
   }
 }
 
+// â”€â”€ Useful controls dialog â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .useful-controls-dialog {
-  background-color: $mainColor;
+  background: $mainColor;
+  border: 1px solid $accentBlueBorder;
+  border-radius: 12px;
+  box-shadow: $glowBlue, 0 16px 48px rgba(0, 0, 0, 0.7);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -181,13 +218,12 @@ button:active {
   width: 450px;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  border-radius: 4px;
+  padding: 18px;
   gap: 16px;
 }
 
 .useful-controls-dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .useful-controls-dialog-title {
@@ -195,20 +231,21 @@ button:active {
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
+  font-size: 17px;
+  font-weight: 600;
 }
 
 .useful-controls-dialog-close {
-  width: 25px;
-  height: 25px;
+  width: 26px;
+  height: 26px;
   padding: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 6px;
   fill: $textColor;
   &:hover {
-    background-color: $secondaryColorHighlight;
+    background: $secondaryColorHighlight;
     cursor: pointer;
   }
 }
@@ -216,32 +253,32 @@ button:active {
 .useful-controls-content-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .divider {
   width: 100%;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background: rgba(59, 130, 246, 0.2);
 }
 
 .useful-controls-button {
   position: absolute !important;
   bottom: 25px;
   right: 25px;
-  transition: 200ms !important;
-  border: none;
+  transition: 150ms !important;
+  border: 1px solid $accentBlueBorder !important;
   color: white;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
   fill: white;
-  border-radius: 5% !important;
-  background-color: $secondaryColor !important;
+  border-radius: 10px !important;
+  background: $secondaryColor !important;
   &:hover {
-    background-color: $secondaryColorDark !important;
+    background: $secondaryColorHighlight !important;
     cursor: pointer;
   }
 }
@@ -250,24 +287,34 @@ button:active {
   position: absolute !important;
   right: 8px;
   top: 8px;
-  border-radius: 2.5% !important;
-  color: grey !important;
+  border-radius: 6px !important;
+  color: rgba(255,255,255,0.5) !important;
 }
 
-// Dialog is used fro useful controls window
-
-// inventory grids
+// â”€â”€ Inventory grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .inventory-grid-wrapper {
   display: flex;
   flex-direction: column;
-  gap: calc($gridGap * 2);
+  gap: 8px;
+  background: $mainColor;
+  border: 1px solid $accentBlueBorder;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: $glowBlue, 0 16px 48px rgba(0, 0, 0, 0.6);
 }
+
 .inventory-grid-header-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15);
   p {
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
   }
 }
 
@@ -280,30 +327,31 @@ button:active {
   overflow-y: scroll;
 }
 
-// inventory slots
+// â”€â”€ Inventory slots â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .inventory-slot {
-  background-color: $secondaryColor;
+  background: $secondaryColor;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 2.5%;
+  border-radius: 8px;
   image-rendering: -webkit-optimize-contrast;
   position: relative;
   background-size: 7vh;
   color: $textColor;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  transition: border-color 0.12s, background 0.12s;
+  &:hover {
+    border-color: $accentBlueBorder;
+    background-color: $secondaryColorHighlight;
+  }
 }
 
 .inventory-slot-label-box {
-  background-color: $mainColor;
+  background: rgba(4, 8, 28, 0.85);
   color: $textColor;
   text-align: center;
-  border-bottom-left-radius: 0.25vh;
-  border-bottom-right-radius: 0.25vh;
-  border-top-color: rgba(0, 0, 0, 0.2);
-  border-top-style: inset;
-  border-top-width: 1px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  border-top: 1px solid rgba(59, 130, 246, 0.12);
 }
 
 .inventory-slot-label-text {
@@ -311,20 +359,23 @@ button:active {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 2px 3px;
-  font-weight: 400;
+  padding: 2px 4px;
+  font-weight: 500;
   font-family: $mainFont;
-  font-size: 12px;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.75);
 }
 
 .inventory-slot-number {
-  background-color: white;
-  color: black;
-  height: 12px;
-  border-top-left-radius: 0.25vh;
-  border-bottom-right-radius: 0.25vh;
-  padding: 3px;
-  font-size: 12px;
+  background: $accentBlue;
+  color: #fff;
+  height: 13px;
+  border-top-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  padding: 3px 4px;
+  font-size: 10px;
+  font-weight: 700;
   font-family: $mainFont;
 }
 
@@ -333,9 +384,7 @@ button:active {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  p {
-    font-size: 12px;
-  }
+  p { font-size: 12px; }
 }
 
 .item-slot-header-wrapper {
@@ -355,9 +404,7 @@ button:active {
   align-self: flex-end;
   padding: 3px;
   gap: 3px;
-  p {
-    font-size: 12px;
-  }
+  p { font-size: 12px; font-weight: 600; }
 }
 
 .item-slot-currency-wrapper {
@@ -367,8 +414,10 @@ button:active {
   align-items: center;
   padding-right: 3px;
   p {
-    font-size: 14px;
-    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    color: #4ade80;
   }
 }
 
@@ -378,75 +427,18 @@ button:active {
   justify-content: flex-end;
   padding-right: 3px;
   p {
-    font-size: 14px;
-    text-shadow: 0.1vh 0.1vh 0 rgba(0, 0, 0, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    color: #facc15;
   }
 }
 
-.tooltip-wrapper {
-  pointer-events: none;
-  display: flex;
-  background-color: $mainColor;
-  width: 200px;
-  padding: 8px;
-  flex-direction: column;
-  min-width: 200px;
-  color: $textColor;
-  font-family: $mainFont;
-  border-radius: 4px;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: inset;
-  border-width: 1px;
-  p {
-    font-size: 12px;
-    font-weight: 400;
-  }
-}
-
-.tooltip-header-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  p {
-    font-size: 15px;
-    font-weight: 400;
-  }
-}
-
-.tooltip-crafting-duration {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  svg {
-    padding-right: 3px;
-  }
-  p {
-    font-size: 14px;
-  }
-}
-
-.tooltip-ingredients {
-  padding-top: 5px;
-}
-
-.tooltip-ingredient {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  img {
-    width: 28px;
-    height: 28px;
-    padding-right: 5px;
-  }
-}
-
-// hotbar
+// â”€â”€ Hotbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .hotbar-container {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   justify-content: center;
   width: 100%;
   position: absolute;
@@ -457,6 +449,9 @@ button:active {
   @extend .inventory-slot;
   width: $gridSize;
   height: $gridSize;
+  border-radius: 10px;
+  background: rgba(6, 12, 40, 0.75);
+  border: 1px solid $accentBlueBorder;
 }
 
 .hotbar-slot-header-wrapper {
@@ -465,13 +460,12 @@ button:active {
   justify-content: space-between;
 }
 
-// item notifications
-
+// â”€â”€ Item notifications â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .item-notification-container {
   display: flex;
   overflow-x: scroll;
   flex-wrap: nowrap;
-  gap: 2px;
+  gap: 4px;
   position: absolute;
   bottom: 20vh;
   left: 50%;
@@ -483,16 +477,17 @@ button:active {
 .item-notification-action-box {
   width: 100%;
   color: $textColor;
-  background-color: $secondaryColor;
+  background: $secondaryColorDark;
   text-transform: uppercase;
   text-align: center;
-  border-top-left-radius: 0.25vh;
-  border-top-right-radius: 0.25vh;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
   font-family: $mainFont;
   p {
-    font-size: 11px;
+    font-size: 10px;
     padding: 2px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
 }
 
@@ -502,52 +497,46 @@ button:active {
   width: $gridSize;
 }
 
+// â”€â”€ Bars â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 .durability-bar {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   height: 3px;
   overflow: hidden;
+  border-radius: 2px;
 }
 
 .weight-bar {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px inset rgba(0, 0, 0, 0.1);
-  height: 0.8vh;
-  border-radius: 5%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  height: 0.7vh;
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.transition-fade-enter {
-  opacity: 0;
+// â”€â”€ Drag preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.item-drag-preview {
+  width: 7.7vh;
+  height: 7.7vh;
+  z-index: 1;
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 7vh;
+  image-rendering: -webkit-optimize-contrast;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
 }
 
-.transition-fade-enter-active {
-  opacity: 1;
-  transition: opacity 200ms;
-}
+// â”€â”€ Transitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.transition-fade-enter { opacity: 0; }
+.transition-fade-enter-active { opacity: 1; transition: opacity 180ms; }
+.transition-fade-exit { opacity: 1; }
+.transition-fade-exit-active { opacity: 0; transition: opacity 180ms; }
 
-.transition-fade-exit {
-  opacity: 1;
-}
-
-.transition-fade-exit-active {
-  opacity: 0;
-  transition: opacity 200ms;
-}
-
-.transition-slide-up-enter {
-  transform: translateY(200px);
-}
-
-.transition-slide-up-enter-active {
-  transform: translateY(0px);
-  transition: all 200ms;
-}
-
-.transition-slide-up-exit {
-  transform: translateY(0px);
-}
-
-.transition-slide-up-exit-active {
-  transform: translateY(200px);
-  transition: all 200ms;
-}
+.transition-slide-up-enter { transform: translateY(200px); }
+.transition-slide-up-enter-active { transform: translateY(0); transition: all 200ms cubic-bezier(0.16,1,0.3,1); }
+.transition-slide-up-exit { transform: translateY(0); }
+.transition-slide-up-exit-active { transform: translateY(200px); transition: all 200ms cubic-bezier(0.16,1,0.3,1); }

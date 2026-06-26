@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4a7c2f"/>
+      <stop offset="100%" stop-color="#1e3d0f"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="12" fill="url(#bg)"/>
+  <rect width="128" height="128" rx="12" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+  <!-- ลำต้นกลาง -->
+  <line x1="64" y1="100" x2="64" y2="30" stroke="#90c050" stroke-width="3" stroke-linecap="round"/>
+  <!-- รวงข้าวซ้าย -->
+  <ellipse cx="46" cy="38" rx="7" ry="13" fill="#f0e060" transform="rotate(-20 46 38)"/>
+  <ellipse cx="52" cy="30" rx="6" ry="12" fill="#e8d840" transform="rotate(-10 52 30)"/>
+  <!-- รวงข้าวกลาง -->
+  <ellipse cx="64" cy="26" rx="7" ry="14" fill="#f5e840" transform="rotate(0 64 26)"/>
+  <!-- รวงข้าวขวา -->
+  <ellipse cx="76" cy="30" rx="6" ry="12" fill="#e8d840" transform="rotate(10 76 30)"/>
+  <ellipse cx="82" cy="38" rx="7" ry="13" fill="#f0e060" transform="rotate(20 82 38)"/>
+  <!-- ใบ -->
+  <path d="M64 65 Q45 55 38 42" stroke="#70b030" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M64 55 Q83 45 90 32" stroke="#70b030" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- เมล็ดที่ตก -->
+  <ellipse cx="38" cy="88" rx="5" ry="8" fill="#f5e840" transform="rotate(-15 38 88)"/>
+  <ellipse cx="52" cy="93" rx="5" ry="8" fill="#e8d840" transform="rotate(5 52 93)"/>
+  <ellipse cx="78" cy="90" rx="5" ry="8" fill="#f0e060" transform="rotate(10 78 90)"/>
+  <ellipse cx="92" cy="84" rx="5" ry="8" fill="#e8d840" transform="rotate(20 92 84)"/>
+</svg>

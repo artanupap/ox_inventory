@@ -2,50 +2,6 @@ if not lib then return end
 
 local Inventory = {}
 
-Inventory.Dumpsters = lib.array:new(218085040, 666561306, -58485588, -206690185, 1511880420, 682791951)
-
-if shared.networkdumpsters then
-    -- Make sure dumpsters are frozen to ensure persistent position across clients
-    SetInterval(function()
-        local objects = GetGamePool('CObject')
-
-        for i = 1, #objects do
-            local object = objects[i]
-            local state = Entity(object).state
-
-            if state.isDumpster == nil then
-                local model = GetEntityModel(object)
-                local isDumpster = Inventory.Dumpsters:includes(model)
-
-                state.isDumpster = isDumpster
-
-                if isDumpster then
-                    FreezeEntityPosition(object, true)
-                end
-            end
-        end
-    end, 3000)
-end
-
-function Inventory.OpenDumpster(entity)
-    if shared.networkdumpsters then
-        local coords = GetEntityCoords(entity)
-        client.openInventory('dumpster', coords)
-        return
-    end
-
-    local netId = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity)
-
-    if not netId then
-        local coords = GetEntityCoords(entity)
-        entity = GetClosestObjectOfType(coords.x, coords.y, coords.z, 0.1, GetEntityModel(entity), true, true, true)
-        netId = entity ~= 0 and NetworkGetNetworkIdFromEntity(entity)
-    end
-
-    if netId then
-        client.openInventory('dumpster', 'dumpster' .. netId)
-    end
-end
 
 local Utils = require 'modules.utils.client'
 local Vehicles = lib.load('data.vehicles')
@@ -106,22 +62,7 @@ function Inventory.OpenTrunk(entity)
 end
 
 if shared.target then
-    exports.ox_target:addModel(Inventory.Dumpsters, {
-        icon = 'fas fa-dumpster',
-        label = locale('search_dumpster'),
-        onSelect = function(data) return Inventory.OpenDumpster(data.entity) end,
-        distance = 2
-    })
-
-    exports.ox_target:addGlobalVehicle({
-        icon = 'fas fa-truck-ramp-box',
-        label = locale('open_label', locale('storage')),
-        distance = 1.5,
-        canInteract = Inventory.CanAccessTrunk,
-        onSelect = function(data)
-            return Inventory.OpenTrunk(data.entity)
-        end
-    })
+    -- trunk handled by custom_trunk resource
 end
 
 ---@param search 'slots' | 1 | 'count' | 2
@@ -427,6 +368,48 @@ RegisterNetEvent('ox_inventory:refreshSlotCount', function(data)
             }
         }
     })
+end)
+
+local OVERWEIGHT_THRESHOLD = 50000
+local isOverweight = false
+local overweightTick = nil
+
+local function startOverweightTick()
+    if overweightTick then return end
+    overweightTick = SetInterval(function()
+        local ped = PlayerPedId()
+        SetPedMoveRateOverride(ped, 0.5)
+        if IsPedGettingIntoAVehicle(ped) then
+            ClearPedTasksImmediately(ped)
+            lib.notify({ id = 'overweight_vehicle', type = 'error', description = locale('overweight_vehicle') or 'น้ำหนักเกินไป ขึ้นรถไม่ได้' })
+        end
+    end, 0)
+end
+
+local function stopOverweightTick()
+    if not overweightTick then return end
+    ClearInterval(overweightTick)
+    overweightTick = nil
+    SetPedMoveRateOverride(PlayerPedId(), 1.0)
+end
+
+CreateThread(function()
+    while true do
+        local weight = PlayerData.weight or 0
+        local overweight = weight >= OVERWEIGHT_THRESHOLD
+
+        if overweight ~= isOverweight then
+            isOverweight = overweight
+            if overweight then
+                lib.notify({ id = 'overweight', type = 'error', description = locale('overweight') or 'น้ำหนักเกิน 50 กิโล — เดินช้าและขึ้นรถไม่ได้' })
+                startOverweightTick()
+            else
+                stopOverweightTick()
+            end
+        end
+
+        Wait(500)
+    end
 end)
 
 return Inventory
