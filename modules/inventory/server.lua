@@ -1697,8 +1697,12 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 
 	local playerInventory = Inventory(source)
 
-	if not playerInventory or not playerInventory.open then return end
+	if not playerInventory or not playerInventory.open then
+		print('[ox_inventory] DEBUG: early return - no playerInventory or open, open=' .. tostring(playerInventory and playerInventory.open))
+		return
+	end
 
+	print('[ox_inventory] DEBUG: open=' .. tostring(playerInventory.open))
 	local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 	local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 
