@@ -15,7 +15,7 @@ local noGiveItems = {
     amulet_cursed = true,
 }
 
-lib.addHook('swapItems', function(payload)
+exports.ox_inventory:registerHook('swapItems', function(payload)
     if payload.fromType == 'player' and payload.toType ~= 'player' then
         local itemName = payload.fromSlot and payload.fromSlot.name
         if itemName and noGiveItems[itemName] then
