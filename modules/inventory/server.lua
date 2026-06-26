@@ -1774,6 +1774,13 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
 		if fromData then
 			if not sameInventory and fromInventory.type == 'player' and toInventory.type ~= 'player' then
 				local itemDef = Items(fromData.name)
+				print(('[ox_inventory] noGive check: item=%s fromType=%s toType=%s itemDef=%s noGive=%s'):format(
+					tostring(fromData.name),
+					tostring(fromInventory.type),
+					tostring(toInventory.type),
+					tostring(itemDef ~= nil),
+					tostring(itemDef and itemDef.noGive)
+				))
 				if itemDef and itemDef.noGive then
 					print(('[ox_inventory] BLOCKED noGive item: %s -> %s (type: %s)'):format(fromData.name, toInventory.id, toInventory.type))
 					return false
