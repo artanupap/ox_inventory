@@ -1,7 +1,18 @@
 if not lib then return end
 
+do
+    local _notify = lib.notify
+    function lib.notify(data)
+        if type(data) == 'table' then
+            data.position = data.position or 'bottom'
+        end
+        return _notify(data)
+    end
+end
+
 require 'modules.bridge.client'
 require 'modules.interface.client'
+require 'modules.trash.client'
 
 local Utils = require 'modules.utils.client'
 local Weapon = require 'modules.weapon.client'
@@ -1704,73 +1715,67 @@ local function isGiveTargetValid(ped, coords)
 end
 
 RegisterNUICallback('giveItem', function(data, cb)
-	cb(1)
+    cb(1)
 
     if usingItem then return end
 
-	if client.giveplayerlist then
-		local coords = cache.vehicle and GetWorldPositionOfEntityBone(playerPed, 0) or GetEntityCoords(playerPed)
+    local coords = cache.vehicle and GetWorldPositionOfEntityBone(playerPed, 0) or GetEntityCoords(playerPed)
+    local nearbyPlayers = lib.getNearbyPlayers(coords, 5.0)
 
-		local nearbyPlayers = lib.getNearbyPlayers(coords, 3.0)
-        local nearbyCount = #nearbyPlayers
-
-		if nearbyCount == 0 then return end
-
-        if nearbyCount == 1 then
-			local option = nearbyPlayers[1]
-
-            if not isGiveTargetValid(option.ped, option.coords) then return end
-
-            return giveItemToTarget(GetPlayerServerId(option.id), data.slot, data.count)
+    local validPlayers, n = {}, 0
+    for i = 1, #nearbyPlayers do
+        local p = nearbyPlayers[i]
+        if isGiveTargetValid(p.ped, p.coords) then
+            n += 1
+            local serverId = GetPlayerServerId(p.id)
+            validPlayers[n] = {
+                serverId = serverId,
+                ped      = p.ped,
+                coords   = p.coords,
+                label    = Utils.getPlayerName(serverId) or ('Player #%s'):format(serverId),
+            }
         end
-
-        local giveList, n = {}, 0
-
-		for i = 1, #nearbyPlayers do
-			local option = nearbyPlayers[i]
-
-            if isGiveTargetValid(option.ped, option.coords) then
-				option.id = GetPlayerServerId(option.id)
-				local playerName = Utils.getPlayerName(option.id)
-                ---@diagnostic disable-next-line: inject-field
-				option.label = playerName
-				n += 1
-				giveList[n] = option
-			end
-		end
-
-        if n == 0 then return end
-
-		lib.registerMenu({
-			id = 'ox_inventory:givePlayerList',
-			title = 'Give item',
-			options = giveList,
-		}, function(selected)
-            giveItemToTarget(giveList[selected].id, data.slot, data.count)
-        end)
-
-		return lib.showMenu('ox_inventory:givePlayerList')
-	end
-
-    if cache.vehicle then
-		local seats = GetVehicleMaxNumberOfPassengers(cache.vehicle) - 1
-
-		if seats >= 0 then
-			local passenger = GetPedInVehicleSeat(cache.vehicle, cache.seat - 2 * (cache.seat % 2) + 1)
-
-			if passenger ~= 0 and IsEntityVisible(passenger) then
-                return giveItemToTarget(GetPlayerServerId(NetworkGetPlayerIndexFromPed(passenger)), data.slot, data.count)
-			end
-		end
-
-        return
-	end
-
-    local entity = Utils.Raycast(1|2|4|8|16, GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 3.0, 0.5), 0.2)
-
-    if entity and IsPedAPlayer(entity) and IsEntityVisible(entity) and #(GetEntityCoords(playerPed, true) - GetEntityCoords(entity, true)) < 3.0 then
-        return giveItemToTarget(GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity)), data.slot, data.count)
     end
+
+    if n == 0 then
+        return lib.notify({ type = 'error', description = 'ไม่มีผู้เล่นอยู่ใกล้' })
+    end
+
+    local slotData = PlayerData.inventory and PlayerData.inventory[data.slot]
+    if not slotData then return end
+
+    local itemDef = Items[slotData.name]
+    if itemDef and itemDef.noGive then
+        return lib.notify({ type = 'error', description = 'ไม่สามารถมอบไอเทมนี้ให้ผู้เล่นอื่นได้' })
+    end
+
+    local maxCount = slotData.count or 1
+
+    local playerOpts = {}
+    for i = 1, n do
+        playerOpts[i] = { value = tostring(i), label = validPlayers[i].label }
+    end
+
+    local input = lib.inputDialog(('มอบของ — %s'):format(slotData.label or slotData.name), {
+        { type = 'select', label = 'เลือกผู้เล่น', options = playerOpts, required = true },
+        { type = 'number', label = ('จำนวน (สูงสุด %s)'):format(maxCount), default = 1, min = 1, max = maxCount, required = true },
+    })
+
+    if not input then return end
+
+    local targetIndex = tonumber(input[1])
+    local count       = tonumber(input[2])
+
+    if not targetIndex or not count then return end
+
+    local target = validPlayers[targetIndex]
+    if not target then return end
+
+    if not isGiveTargetValid(target.ped, target.coords) then
+        return lib.notify({ type = 'error', description = 'ผู้เล่นอยู่ไกลเกินไป' })
+    end
+
+    giveItemToTarget(target.serverId, data.slot, count)
 end)
 
 RegisterNUICallback('useButton', function(data, cb)
@@ -1813,6 +1818,31 @@ RegisterNUICallback('swapItems', function(data, cb)
 		if cache.vehicle or IsPedFalling(playerPed) then
 			swapActive = false
 			return cb(false)
+		end
+
+		-- Must be near trash to discard; near trash = permanent delete (no ground drop)
+		do
+			local trashModels = { `prop_bin_07b`, `prop_dumpster_3a`, `prop_bin_01a`, `prop_dumpster_4b`, `prop_recyclebin_05_a`, `zprop_bin_01a_old`, `prop_bin_07c`, `prop_bin_10b`, `prop_bin_10a`, `prop_bin_11a`, `prop_bin_11b`, `prop_bin_04a`, `prop_dumpster_4a`, `prop_dumpster_01a`, `prop_bin_08a`, `prop_bin_02a`, `prop_bin_03a`, `prop_dumpster_02b`, `prop_bin_08open`, `prop_bin_14b`, `prop_dumpster_02a`, `prop_bin_05a`, `prop_bin_07a` }
+			local coords = GetEntityCoords(playerPed)
+			local nearTrash = false
+			for _, model in ipairs(trashModels) do
+				if GetClosestObjectOfType(coords.x, coords.y, coords.z, 3.0, model, false, false, false) ~= 0 then
+					nearTrash = true
+					break
+				end
+			end
+			if nearTrash then
+				swapActive = false
+				local slotData = PlayerData.inventory and PlayerData.inventory[data.fromSlot]
+				if slotData then
+					TriggerServerEvent('ox_inventory:trashItem', slotData.name, data.count or slotData.count or 1, slotData.metadata, data.fromSlot)
+				end
+				return cb(false)
+			else
+				swapActive = false
+				lib.notify({ title = 'ทิ้งไม่ได้', description = 'ต้องอยู่ใกล้ถังขยะ', type = 'error' })
+				return cb(false)
+			end
 		end
 
 		local coords = GetEntityCoords(playerPed)
