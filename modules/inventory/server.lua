@@ -1687,25 +1687,16 @@ local GetLocks = require 'modules.locks'
 ---@param source number
 ---@param data SwapSlotData
 lib.callback.register('ox_inventory:swapItems', function(source, data)
-	print(('[ox_inventory] swapItems v7 called: fromType=%s toType=%s count=%s'):format(tostring(data.fromType), tostring(data.toType), tostring(data.count)))
 	if data.fromType ~= data.toType and data.toType ~= 'player' and data.fromType ~= 'player' then
         Utils.LogExploit(source, 'swapItems', 'Triggered event with invalid data', true)
         return
     end
 
-	if data.count < 1 then
-		print('[ox_inventory] DEBUG: early return count=' .. tostring(data.count))
-		return
-	end
+	if data.count < 1 then return end
 
 	local playerInventory = Inventory(source)
 
-	if not playerInventory or not playerInventory.open then
-		print('[ox_inventory] DEBUG: early return - no playerInventory or open, open=' .. tostring(playerInventory and playerInventory.open))
-		return
-	end
-
-	print('[ox_inventory] DEBUG: open=' .. tostring(playerInventory.open))
+	if not playerInventory or not playerInventory.open then return end
 	local toInventory = (data.toType == 'player' and playerInventory) or Inventory(playerInventory.open)
 	local fromInventory = (data.fromType == 'player' and playerInventory) or Inventory(playerInventory.open)
 
@@ -1779,22 +1770,9 @@ lib.callback.register('ox_inventory:swapItems', function(source, data)
         end
 
 		if fromData then
-			print(('[ox_inventory] DEBUG: item=%s sameInv=%s fromType=%s toType=%s'):format(
-				tostring(fromData.name), tostring(sameInventory), tostring(fromInventory.type), tostring(toInventory.type)
-			))
 			if not sameInventory and fromInventory.type == 'player' and toInventory.type ~= 'player' then
 				local itemDef = Items(fromData.name)
-				print(('[ox_inventory] noGive check: item=%s fromType=%s toType=%s itemDef=%s noGive=%s'):format(
-					tostring(fromData.name),
-					tostring(fromInventory.type),
-					tostring(toInventory.type),
-					tostring(itemDef ~= nil),
-					tostring(itemDef and itemDef.noGive)
-				))
-				if itemDef and itemDef.noGive then
-					print(('[ox_inventory] BLOCKED noGive item: %s -> %s (type: %s)'):format(fromData.name, toInventory.id, toInventory.type))
-					return false
-				end
+				if itemDef and itemDef.noGive then return false end
 			end
 
             if fromData.metadata.container and toInventory.type == 'container' then return false end
